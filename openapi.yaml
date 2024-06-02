@@ -1,0 +1,608 @@
+openapi: 3.0.0
+info:
+  title: Meloaude API
+  description: API Meloaude pour gérer les applications, les pays et les utilisateurs.
+  version: 1.0.0
+servers:
+  - url: http://localhost:9000 
+    description: Serveur local de développement
+
+paths:
+  /applications:
+    get:
+      summary: Récupère la liste de toutes les applications
+      operationId: getApplications
+      tags:
+        - Applications
+      responses:
+        '200':
+          description: Liste des applications récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Application'
+
+    post:
+      summary: Crée une nouvelle application
+      operationId: createApplication
+      tags:
+        - Applications
+      requestBody:
+        description: Objet Application à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application'
+      responses:
+        '201':
+          description: Application créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+
+  /applications/{id}:
+    get:
+      summary: Récupère une application spécifique par son ID
+      operationId: getApplicationById
+      tags:
+        - Applications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'application à récupérer
+      responses:
+        '200':
+          description: Application récupérée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '404':
+          description: Application non trouvée
+
+    put:
+      summary: Met à jour une application existante
+      operationId: updateApplication
+      tags:
+        - Applications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'application à mettre à jour
+      requestBody:
+        description: Objet Application avec les mises à jour
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application'
+      responses:
+        '200':
+          description: Application mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '404':
+          description: Application non trouvée
+
+    delete:
+      summary: Supprime une application existante
+      operationId: deleteApplication
+      tags:
+        - Applications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'application à supprimer
+      responses:
+        '204':
+          description: Application supprimée avec succès
+        '404':
+          description: Application non trouvée
+
+  /countries:
+    get:
+      summary: Récupère la liste de tous les pays
+      operationId: getCountries
+      tags:
+        - Countries
+      responses:
+        '200':
+          description: Liste des pays récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Country'
+
+    post:
+      summary: Crée un nouveau pays
+      operationId: createCountry
+      tags:
+        - Countries
+      requestBody:
+        description: Objet Country à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Country'
+      responses:
+        '201':
+          description: Pays créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+
+  /countries/{id}:
+    get:
+      summary: Récupère un pays spécifique par son ID
+      operationId: getCountryById
+      tags:
+        - Countries
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID du pays à récupérer
+      responses:
+        '200':
+          description: Pays récupéré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+        '404':
+          description: Pays non trouvé
+
+    put:
+      summary: Met à jour un pays existant
+      operationId: updateCountry
+      tags:
+        - Countries
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID du pays à mettre à jour
+      requestBody:
+        description: Objet Country avec les mises à jour
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Country'
+      responses:
+        '200':
+          description: Pays mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+        '404':
+          description: Pays non trouvé
+
+    delete:
+      summary: Supprime un pays existant
+      operationId: deleteCountry
+      tags:
+        - Countries
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID du pays à supprimer
+      responses:
+        '204':
+          description: Pays supprimé avec succès
+        '404':
+          description: Pays non trouvé
+
+  /users:
+    post:
+      summary: Enregistre un nouvel utilisateur
+      operationId: registerUser
+      tags:
+        - Users
+      requestBody:
+        description: Objet User à enregistrer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Utilisateur enregistré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    get:
+      summary: Récupère un utilisateur spécifique par son ID
+      operationId: getUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'utilisateur à récupérer
+      responses:
+        '200':
+          description: Utilisateur récupéré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Utilisateur non trouvé
+
+  /users/{userId}/roles/{roleId}:
+    put:
+      summary: Assigner un rôle à un utilisateur dans une application
+      operationId: assignRoleToUser
+      tags:
+        - Users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'utilisateur
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID du rôle à assigner
+      requestBody:
+        description: Objet Assign contenant l'ID de l'application et d'autres détails
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Assign'
+      responses:
+        '200':
+          description: Rôle assigné avec succès à l'utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assign'
+        '404':
+          description: Utilisateur ou rôle non trouvé
+components:
+  schemas:
+    Application:
+      type: object
+      properties:
+        applicationId:
+          type: string
+          format: uuid
+          description: ID de l'application
+        applicationName:
+          type: string
+          description: Nom de l'application
+        applicationCode:
+          type: string
+          description: Code de l'application
+        serviceOpeningHours:
+          type: string
+          format: date-time
+          description: Heures d'ouverture du service
+        serviceClosingHours:
+          type: string
+          format: date-time
+          description: Heures de fermeture du service
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Country'
+          description: Liste des pays
+        doubleFactorAuthorizationEnable:
+          type: boolean
+          description: Autorisation à double facteur activée
+        doubleFactorAuthorization:
+          $ref: '#/components/schemas/DoubleFactorAuthorization'
+
+    Country:
+      type: object
+      properties:
+        countryId:
+          type: string
+          description: ID du pays
+        countryName:
+          type: string
+          description: Nom du pays
+        countryCode:
+          type: string
+          description: Code du pays
+        countryNameCode:
+          type: string
+          description: Code du nom du pays
+
+    DoubleFactorAuthorization:
+      type: object
+      properties:
+        dbfa_id:
+          type: string
+          description: ID de l'autorisation à double facteur
+        dbfa_name:
+          type: string
+          description: Nom de l'autorisation à double facteur
+        dbfa_code:
+          type: string
+          description: Code de l'autorisation à double facteur
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID de l'utilisateur
+        firstname:
+          type: string
+          description: Prénom de l'utilisateur
+        surname:
+          type: string
+          description: Nom de famille de l'utilisateur
+        email:
+          type: string
+          description: Email de l'utilisateur
+        password:
+          type: string
+          description: Mot de passe de l'utilisateur
+        location:
+          $ref: '#/components/schemas/Address'
+        phone:
+          type: string
+          description: Téléphone de l'utilisateur
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date de naissance de l'utilisateur
+        paiementInfos:
+          $ref: '#/components/schemas/PaymentInfo'
+        createDate:
+          type: string
+          format: date
+          description: Date de création de l'utilisateur
+        updateDate:
+          type: string
+          format: date
+          description: Date de mise à jour de l'utilisateur
+        status:
+          type: string
+          description: Statut de l'utilisateur (registed, validated, blocked, banned)
+        authenticationCode:
+          type: string
+          description: Code d'authentification
+        dbfamin:
+          type: string
+          format: uuid
+          description: ID de l'autorisation à double facteur
+
+    Address:
+      type: object
+      properties:
+        addressId:
+          type: string
+          format: uuid
+          description: ID de l'adresse
+        namedPlace:
+          type: string
+          description: Lieu nommé
+        town:
+          type: string
+          description: Ville
+        fullAddress:
+          type: string
+          description: Adresse complète
+        locationLat:
+          type: string
+          description: Latitude
+        locationLong:
+          type: string
+          description: Longitude
+        countryCode:
+          type: string
+          description: Code du pays
+        isDefault:
+          type: boolean
+          description: Adresse par défaut
+        createDate:
+          type: string
+          format: date
+          description: Date de création
+        updateDate:
+          type: string
+          format: date
+          description: Date de mise à jour
+
+    PaymentInfo:
+      type: object
+      properties:
+        paymentInfoId:
+          type: string
+          format: uuid
+          description: ID des informations de paiement
+        name:
+          type: string
+          description: Nom
+        pan:
+          type: string
+          description: PAN (Numéro de compte principal)
+        domiciliation:
+          type: string
+          description: Domiciliation
+        expirationDate:
+          type: string
+          format: date
+          description: Date d'expiration
+        locationLong:
+          type: string
+          description: Longitude
+        paymentType:
+          type: string
+          description: Type de paiement
+        isActive:
+          type: boolean
+          description: Actif
+        isDefault:
+          type: boolean
+          description: Par défaut
+        createDate:
+          type: string
+          format: date
+          description: Date de création
+        updateDate:
+          type: string
+          format: date
+          description: Date de mise à jour
+
+    Assign:
+      type: object
+      properties:
+        assignId:
+          type: string
+          format: uuid
+          description: ID de l'assignation
+        appId:
+          type: string
+          format: uuid
+          description: ID de l'application
+        userId:
+          type: string
+          format: uuid
+          description: ID de l'utilisateur
+        roleId:
+          type: string
+          format: uuid
+          description: ID du rôle
+        expirationAssignDate:
+          type: string
+          format: date
+          description: Date d'expiration de l'assignation
+        isActive:
+          type: boolean
+          description: Actif
+        createDate:
+          type: string
+          format: date
+          description: Date de création
+        updateDate:
+          type: string
+          format: date
+          description: Date de mise à jour
+
+    Media:
+      type: object
+      properties:
+        mediaId:
+          type: string
+          format: uuid
+          description: ID du média
+        userId:
+          type: string
+          description: ID de l'utilisateur
+        value:
+          type: string
+          description: Valeur
+        mediaName:
+          type: string
+          description: Nom du média (ID Card, Permis, Recto/verso)
+        createDate:
+          type: string
+          format: date
+          description: Date de création
+        updateDate:
+          type: string
+          format: date
+          description: Date de mise à jour
+
+    Role:
+      type: object
+      properties:
+        roleId:
+          type: string
+          format: uuid
+          description: ID du rôle
+        roleName:
+          type: string
+          description: Nom du rôle
+        permission:
+          type: string
+          description: Permission
+        level:
+          type: number
+          description: Niveau
+        createDate:
+          type: string
+          format: date
+          description: Date de création
+        updateDate:
+          type: string
+          format: date
+          description: Date de mise à jour
+
+    RoleApp:
+      type: object
+      properties:
+        roleAppId:
+          type: string
+          format: uuid
+          description: ID de l'application du rôle
+        roleId:
+          type: string
+          format: uuid
+          description: ID du rôle
+        roleApp:
+          type: string
+          format: uuid
+          description: Application du rôle
+        isAuthorized:
+          type: boolean
+          description: Autorisé
+        createDate:
+          type: string
+          format: date
+          description: Date de création
+        updateDate:
+          type: string
+          format: date
+          description: Date de mise à jour
