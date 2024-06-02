@@ -25,6 +25,7 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 public class SpringSecurityConfig {
 
     private String jwtKey = "dechanelMeloaudeJwtTokendechanelMeloaudeJwtToken";
+    //
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
