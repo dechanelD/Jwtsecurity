@@ -334,10 +334,10 @@ paths:
         - melo_auth:
             - write
             - read
-  /sign-in:
+  /user/login:
     post:
       summary: Connection d'un nouvel utilisateur
-      operationId: signInUser
+      operationId: loginUser
       tags:
         - Users
       description: requete utilisé pour connecté un utilisateur
@@ -378,10 +378,10 @@ paths:
         '400':
           description: Requête invalide
           
-  /sign-out:
+  /user/logout:
     post:
       summary: Déconnection d'un utilisateur
-      operationId: signOutUser
+      operationId: logoutUser
       tags:
         - Users
       security:
