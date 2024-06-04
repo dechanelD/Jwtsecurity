@@ -4,7 +4,7 @@ info:
   description: API Meloaude pour gérer les applications, les pays et les utilisateurs.
   version: 1.0.0
 servers:
-  - url: http://localhost:9000 
+  - url: http://localhost:9000
     description: Serveur local de développement
 
 paths:
@@ -305,6 +305,142 @@ paths:
                 $ref: '#/components/schemas/Assign'
         '404':
           description: Utilisateur ou rôle non trouvé
+
+  /signin:
+    post:
+      summary: Connexion de l'utilisateur
+      operationId: signIn
+      tags:
+        - Authentication
+      requestBody:
+        description: Informations de connexion de l'utilisateur
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Identifiants invalides
+
+  /signout:
+    post:
+      summary: Déconnexion de l'utilisateur
+      operationId: signOut
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Déconnexion réussie
+
+  /signup:
+    post:
+      summary: Inscription d'un nouvel utilisateur
+      operationId: signUp
+      tags:
+        - Authentication
+      requestBody:
+        description: Informations d'inscription de l'utilisateur
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        '201':
+          description: Inscription réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+        '400':
+          description: Erreur dans les informations fournies
+
+  /password-reset/init:
+    post:
+      summary: Initialisation de la réinitialisation du mot de passe
+      operationId: initiatePasswordReset
+      tags:
+        - Password Reset
+      requestBody:
+        description: Email de l'utilisateur pour initier la réinitialisation du mot de passe
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Demande de réinitialisation initiée avec succès
+        '404':
+          description: Utilisateur non trouvé
+
+  /password-reset/validate:
+    post:
+      summary: Validation du code de réinitialisation du mot de passe
+      operationId: validateResetCode
+      tags:
+        - Password Reset
+      requestBody:
+        description: Code de validation pour réinitialiser le mot de passe
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                code:
+                  type: string
+      responses:
+        '200':
+          description: Code de validation validé avec succès
+        '400':
+          description: Code de validation invalide
+
+  /password-reset/new:
+    post:
+      summary: Définir un nouveau mot de passe
+      operationId: setNewPassword
+      tags:
+        - Password Reset
+      requestBody:
+        description: Nouveau mot de passe pour l'utilisateur
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                code:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Mot de passe mis à jour avec succès
+        '400':
+          description: Erreur dans la mise à jour du mot de passe
 components:
   schemas:
     Application:
@@ -606,3 +742,42 @@ components:
           type: string
           format: date
           description: Date de mise à jour
+
+    Register:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstname:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        location:
+          $ref: '#/components/schemas/Address'
+        phone:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        paiementInfos:
+          $ref: '#/components/schemas/PaymentInfo'
+        createDate:
+          type: string
+          format: date
+        updateDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [registed, validated, blocked, banned]
+        authenticationCode:
+          type: string
+        #Double facteur auth
+        dbfamin:
+          type: string
+          format: uuid
