@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:9000 
     description: Serveur local de développement
-
+  
 paths:
   /applications:
     get:
@@ -243,6 +243,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+    put:
+      summary: Mise a jour des information d'un utilisateur
+      operationId: updateUser
+      tags:
+        - Users
+      requestBody:
+        description: Informations de mise a jour d'un utilisateur
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Informations mise a jour avec success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Utilisateur non trouvé
+      security:
+        - melo_auth:
+            - write
+            - read
 
   /users/{id}:
     get:
@@ -267,7 +292,7 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: Utilisateur non trouvé
-
+  
   /users/{userId}/roles/{roleId}:
     put:
       summary: Assigner un rôle à un utilisateur dans une application
@@ -305,6 +330,132 @@ paths:
                 $ref: '#/components/schemas/Assign'
         '404':
           description: Utilisateur ou rôle non trouvé
+      security:
+        - melo_auth:
+            - write
+            - read
+  /sign-in:
+    post:
+      summary: Connection d'un nouvel utilisateur
+      operationId: signInUser
+      tags:
+        - Users
+      description: requete utilisé pour connecté un utilisateur
+      requestBody:
+        description: Informations de connection
+        required: true
+        content:
+          application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      email:
+                        type: string
+                        format: email
+                      password:
+                        type: string
+                  - type: object
+                    properties:
+                      password:
+                        type: string
+      responses:
+        '201':
+          description: Utilisateur connecté avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: Utilisateur ou rôle non trouvé
+        '401':
+          description: Utilisateur non trouvé authorisé
+        '400':
+          description: Requête invalide
+          
+  /sign-out:
+    post:
+      summary: Déconnection d'un utilisateur
+      operationId: signOutUser
+      tags:
+        - Users
+      security:
+        - melo_auth:
+            - write
+            - read
+      description: requete utilisé pour déconnecté un utilisateur
+      responses:
+        '201':
+          description: Utilisateur déconnecté avec succès
+        '401':
+          description: Opération non authorisé
+        '400':
+          description: Requête invalide
+
+  /users/reset-password/init:
+    post:
+      summary: Initialization du changement du mot de passe
+      operationId: initPasswordReset
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        200:
+          description: changement du mot de passe initializé avec success
+
+  /users/reset-password/validate:
+    post:
+      summary: Validation du token pout changé de mot de passe
+      operationId: validatePasswordReset
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        200:
+          description: Password reset token is valid
+
+  /users/reset-password/enter-new:
+    post:
+      summary: Changement du mot de passe
+      operationId: enterNewPassword
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        200:
+          description: Changement du mot de passe réussit
+
 components:
   schemas:
     Application:
@@ -606,3 +757,16 @@ components:
           type: string
           format: date
           description: Date de mise à jour
+  securitySchemes:
+    melo_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: ''
+          scopes:
+            write: write permission
+            read: readpermission
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
