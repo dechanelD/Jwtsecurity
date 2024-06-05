@@ -4,9 +4,9 @@ info:
   description: API Meloaude pour gérer les applications, les pays et les utilisateurs.
   version: 1.0.0
 servers:
-  - url: http://localhost:9000
+  - url: http://localhost:9000 
     description: Serveur local de développement
-
+  
 paths:
   /applications:
     get:
@@ -243,6 +243,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+    put:
+      summary: Mise a jour des information d'un utilisateur
+      operationId: updateUser
+      tags:
+        - Users
+      requestBody:
+        description: Informations de mise a jour d'un utilisateur
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Informations mise a jour avec success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Utilisateur non trouvé
+      security:
+        - melo_auth:
+            - write
+            - read
 
   /users/{id}:
     get:
@@ -267,7 +292,7 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: Utilisateur non trouvé
-
+  
   /users/{userId}/roles/{roleId}:
     put:
       summary: Assigner un rôle à un utilisateur dans une application
@@ -305,28 +330,38 @@ paths:
                 $ref: '#/components/schemas/Assign'
         '404':
           description: Utilisateur ou rôle non trouvé
-
-  /signin:
+      security:
+        - melo_auth:
+            - write
+            - read
+  /user/login:
     post:
-      summary: Connexion de l'utilisateur
-      operationId: signIn
+      summary: Connection d'un nouvel utilisateur
+      operationId: loginUser
       tags:
-        - Authentication
+        - Users
+      description: requete utilisé pour connecté un utilisateur
       requestBody:
-        description: Informations de connexion de l'utilisateur
+        description: Informations de connection
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      email:
+                        type: string
+                        format: email
+                      password:
+                        type: string
+                  - type: object
+                    properties:
+                      password:
+                        type: string
       responses:
-        '200':
-          description: Connexion réussie
+        '201':
+          description: Utilisateur connecté avec succès
           content:
             application/json:
               schema:
@@ -334,50 +369,41 @@ paths:
                 properties:
                   token:
                     type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: Utilisateur ou rôle non trouvé
         '401':
-          description: Identifiants invalides
-
-  /signout:
+          description: Utilisateur non trouvé authorisé
+        '400':
+          description: Requête invalide
+          
+  /user/logout:
     post:
-      summary: Déconnexion de l'utilisateur
-      operationId: signOut
+      summary: Déconnection d'un utilisateur
+      operationId: logoutUser
       tags:
-        - Authentication
-      responses:
-        '200':
-          description: Déconnexion réussie
-
-  /signup:
-    post:
-      summary: Inscription d'un nouvel utilisateur
-      operationId: signUp
-      tags:
-        - Authentication
-      requestBody:
-        description: Informations d'inscription de l'utilisateur
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Register'
+        - Users
+      security:
+        - melo_auth:
+            - write
+            - read
+      description: requete utilisé pour déconnecté un utilisateur
       responses:
         '201':
-          description: Inscription réussie
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Register'
+          description: Utilisateur déconnecté avec succès
+        '401':
+          description: Opération non authorisé
         '400':
-          description: Erreur dans les informations fournies
+          description: Requête invalide
 
-  /password-reset/init:
+  /users/reset-password/init:
     post:
-      summary: Initialisation de la réinitialisation du mot de passe
-      operationId: initiatePasswordReset
+      summary: Initialization du changement du mot de passe
+      operationId: initPasswordReset
       tags:
-        - Password Reset
+        - Users
       requestBody:
-        description: Email de l'utilisateur pour initier la réinitialisation du mot de passe
         required: true
         content:
           application/json:
@@ -387,60 +413,49 @@ paths:
                 email:
                   type: string
       responses:
-        '200':
-          description: Demande de réinitialisation initiée avec succès
-        '404':
-          description: Utilisateur non trouvé
+        200:
+          description: changement du mot de passe initializé avec success
 
-  /password-reset/validate:
+  /users/reset-password/validate:
     post:
-      summary: Validation du code de réinitialisation du mot de passe
-      operationId: validateResetCode
+      summary: Validation du token pout changé de mot de passe
+      operationId: validatePasswordReset
       tags:
-        - Password Reset
+        - Users
       requestBody:
-        description: Code de validation pour réinitialiser le mot de passe
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                email:
-                  type: string
-                code:
+                token:
                   type: string
       responses:
-        '200':
-          description: Code de validation validé avec succès
-        '400':
-          description: Code de validation invalide
+        200:
+          description: Password reset token is valid
 
-  /password-reset/new:
+  /users/reset-password/enter-new:
     post:
-      summary: Définir un nouveau mot de passe
-      operationId: setNewPassword
+      summary: Changement du mot de passe
+      operationId: enterNewPassword
       tags:
-        - Password Reset
+        - Users
       requestBody:
-        description: Nouveau mot de passe pour l'utilisateur
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                email:
-                  type: string
-                code:
+                token:
                   type: string
                 newPassword:
                   type: string
       responses:
-        '200':
-          description: Mot de passe mis à jour avec succès
-        '400':
-          description: Erreur dans la mise à jour du mot de passe
+        200:
+          description: Changement du mot de passe réussit
+
 components:
   schemas:
     Application:
@@ -742,42 +757,16 @@ components:
           type: string
           format: date
           description: Date de mise à jour
-
-    Register:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        firstname:
-          type: string
-        surname:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-        location:
-          $ref: '#/components/schemas/Address'
-        phone:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        paiementInfos:
-          $ref: '#/components/schemas/PaymentInfo'
-        createDate:
-          type: string
-          format: date
-        updateDate:
-          type: string
-          format: date
-        status:
-          type: string
-          enum: [registed, validated, blocked, banned]
-        authenticationCode:
-          type: string
-        #Double facteur auth
-        dbfamin:
-          type: string
-          format: uuid
+  securitySchemes:
+    melo_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: ''
+          scopes:
+            write: write permission
+            read: readpermission
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
