@@ -14,6 +14,12 @@ paths:
       operationId: getApplications
       tags:
         - Applications
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
       responses:
         '200':
           description: Liste des applications récupérée avec succès
@@ -23,6 +29,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Application'
+        
 
     post:
       summary: Crée une nouvelle application
@@ -44,14 +51,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Application'
 
-  /applications/{id}:
+  /applications/{applicationName}:
     get:
       summary: Récupère une application spécifique par son ID
       operationId: getApplicationById
       tags:
         - Applications
       parameters:
-        - name: id
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: applicationName
           in: path
           required: true
           schema:
@@ -67,6 +79,17 @@ paths:
                 $ref: '#/components/schemas/Application'
         '404':
           description: Application non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       summary: Met à jour une application existante
@@ -74,7 +97,12 @@ paths:
       tags:
         - Applications
       parameters:
-        - name: id
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: applicationName
           in: path
           required: true
           schema:
@@ -97,6 +125,16 @@ paths:
                 $ref: '#/components/schemas/Application'
         '404':
           description: Application non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     delete:
       summary: Supprime une application existante
@@ -104,7 +142,12 @@ paths:
       tags:
         - Applications
       parameters:
-        - name: id
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: applicationName
           in: path
           required: true
           schema:
@@ -116,6 +159,504 @@ paths:
           description: Application supprimée avec succès
         '404':
           description: Application non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /medias:
+    get:
+      summary: Récupère la liste de tous les medias
+      operationId: getMedias
+      tags:
+        - Medias
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+      responses:
+        '200':
+          description: Liste des medias récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Media'
+        
+
+    post:
+      summary: Crée un nouveau media
+      operationId: createMedia
+      tags:
+        - Medias
+      requestBody:
+        description: Objet Media à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Media'
+      responses:
+        '201':
+          description: Media créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Media'
+
+  /medias/{mediaName}:
+    get:
+      summary: Récupère un media spécifique par son ID
+      operationId: getMediaById
+      tags:
+        - Medias
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: mediaName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID du media à récupérer
+      responses:
+        '200':
+          description: Media récupérée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Media'
+        '404':
+          description: Media non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Met à jour d'un media existante
+      operationId: updateMedia
+      tags:
+        - Medias
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: mediaName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID du media à mettre à jour
+      requestBody:
+        description: Objet media avec les mises à jour
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Media'
+      responses:
+        '200':
+          description: Media mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Media'
+        '404':
+          description: Media non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Supprime un Media existant
+      operationId: deleteMedia
+      tags:
+        - Medias
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: mediaName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID du media à supprimer
+      responses:
+        '204':
+          description: Media supprimée avec succès
+        '404':
+          description: Media non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  
+  /roles:
+    get:
+      summary: Récupère la liste de tous les roles
+      operationId: getRoles
+      tags:
+        - Roles
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+      responses:
+        '200':
+          description: Liste des roles récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        
+
+    post:
+      summary: Crée un nouveau role
+      operationId: createRole
+      tags:
+        - Roles
+      requestBody:
+        description: Objet role à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '201':
+          description: Role créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+
+  /roles/{roleName}:
+    get:
+      summary: Récupère un role spécifique par son ID
+      operationId: getRoleById
+      tags:
+        - Roles
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: roleName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID du role à récupérer
+      responses:
+        '200':
+          description: Role récupérée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '404':
+          description: Role non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Met à jour d'un role existant
+      operationId: updateRole
+      tags:
+        - Roles
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: roleName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de role à mettre à jour
+      requestBody:
+        description: Objet role avec les mises à jour
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '200':
+          description: Role mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '404':
+          description: Role non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Supprime un Role existant
+      operationId: deleteRole
+      tags:
+        - Roles
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: roleName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID du role à supprimer
+      responses:
+        '204':
+          description: Role supprimée avec succès
+        '404':
+          description: Role non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  
+  /role-apps:
+    get:
+      summary: Récupère la liste de tous les roles des applications
+      operationId: getRoleApps
+      tags:
+        - RoleApps
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+      responses:
+        '200':
+          description: Liste des roles des applications récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleApp'
+        
+
+    post:
+      summary: Crée un nouveau role d' application
+      operationId: createRoleApp
+      tags:
+        - RoleApps
+      requestBody:
+        description: Objet role d'application à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleApp'
+      responses:
+        '201':
+          description: Role créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleApp'
+
+  /role-apps/{roleAppName}:
+    get:
+      summary: Récupère un role d'application spécifique par son ID
+      operationId: getRoleAppById
+      tags:
+        - RoleApps
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: roleAppName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID du role à récupérer
+      responses:
+        '200':
+          description: Role d'application récupérée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleApp'
+        '404':
+          description: Role d'application non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Met à jour d'un role d'application existant
+      operationId: updateRoleApp
+      tags:
+        - RoleApps
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: roleAppName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de role d'application à mettre à jour
+      requestBody:
+        description: Objet role d'application avec les mises à jour
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleApp'
+      responses:
+        '200':
+          description: Role d'application mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleApp'
+        '404':
+          description: Role d'application non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Supprime un role d'application existant
+      operationId: deleteRoleApp
+      tags:
+        - RoleApps
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: roleAppName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID du role d'application à supprimer
+      responses:
+        '204':
+          description: Role d'application supprimée avec succès
+        '404':
+          description: Role d'application non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /countries:
     get:
@@ -123,6 +664,12 @@ paths:
       operationId: getCountries
       tags:
         - Countries
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
       responses:
         '200':
           description: Liste des pays récupérée avec succès
@@ -132,12 +679,24 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Country'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     post:
       summary: Crée un nouveau pays
       operationId: createCountry
       tags:
         - Countries
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
       requestBody:
         description: Objet Country à créer
         required: true
@@ -152,15 +711,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Country'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-  /countries/{id}:
+  /countries/{countrieName}:
     get:
       summary: Récupère un pays spécifique par son ID
       operationId: getCountryById
       tags:
         - Countries
       parameters:
-        - name: id
+        - name: countrieName
           in: path
           required: true
           schema:
@@ -175,6 +740,16 @@ paths:
                 $ref: '#/components/schemas/Country'
         '404':
           description: Pays non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       summary: Met à jour un pays existant
@@ -182,7 +757,12 @@ paths:
       tags:
         - Countries
       parameters:
-        - name: id
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: countrieName
           in: path
           required: true
           schema:
@@ -204,6 +784,16 @@ paths:
                 $ref: '#/components/schemas/Country'
         '404':
           description: Pays non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     delete:
       summary: Supprime un pays existant
@@ -211,17 +801,36 @@ paths:
       tags:
         - Countries
       parameters:
-        - name: id
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: countrieName
           in: path
           required: true
           schema:
             type: string
           description: ID du pays à supprimer
       responses:
-        '204':
+        '201':
           description: Pays supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: boolean
         '404':
           description: Pays non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /users:
     post:
@@ -229,6 +838,12 @@ paths:
       operationId: registerUser
       tags:
         - Users
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
       requestBody:
         description: Objet User à enregistrer
         required: true
@@ -243,11 +858,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     put:
       summary: Mise a jour des information d'un utilisateur
       operationId: updateUser
       tags:
         - Users
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
       requestBody:
         description: Informations de mise a jour d'un utilisateur
         required: true
@@ -269,14 +896,19 @@ paths:
             - write
             - read
 
-  /users/{id}:
+  /users/{userName}:
     get:
       summary: Récupère un utilisateur spécifique par son ID
       operationId: getUserById
       tags:
         - Users
       parameters:
-        - name: id
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: userName
           in: path
           required: true
           schema:
@@ -292,22 +924,37 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   
-  /users/{userId}/roles/{roleId}:
+  /users/{userName}/roles/{roleName}:
     put:
       summary: Assigner un rôle à un utilisateur dans une application
       operationId: assignRoleToUser
       tags:
         - Users
       parameters:
-        - name: userId
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: userName
           in: path
           required: true
           schema:
             type: string
             format: uuid
           description: ID de l'utilisateur
-        - name: roleId
+        - name: roleName
           in: path
           required: true
           schema:
@@ -330,6 +977,16 @@ paths:
                 $ref: '#/components/schemas/Assign'
         '404':
           description: Utilisateur ou rôle non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
         - melo_auth:
             - write
@@ -341,6 +998,12 @@ paths:
       tags:
         - Users
       description: requete utilisé pour connecté un utilisateur
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
       requestBody:
         description: Informations de connection
         required: true
@@ -375,15 +1038,36 @@ paths:
           description: Utilisateur ou rôle non trouvé
         '401':
           description: Utilisateur non trouvé authorisé
-        '400':
-          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           
-  /user/logout:
-    post:
+  /user/{userName}/logout:
+    get:
       summary: Déconnection d'un utilisateur
       operationId: logoutUser
       tags:
         - Users
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: userName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'utilisateur
       security:
         - melo_auth:
             - write
@@ -392,55 +1076,109 @@ paths:
       responses:
         '201':
           description: Utilisateur déconnecté avec succès
+          content:
+            application/json:
+              schema:
+                type: boolean
         '401':
           description: Opération non authorisé
-        '400':
-          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-  /users/reset-password/init:
-    post:
+  /users/{userName}/reset-password/init:
+    get:
       summary: Initialization du changement du mot de passe
       operationId: initPasswordReset
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: userName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'utilisateur
       tags:
         - Users
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
       responses:
-        200:
+        '200':
           description: changement du mot de passe initializé avec success
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-  /users/reset-password/validate:
-    post:
+  /users/{userName}/reset-password/validate:
+    get:
       summary: Validation du token pout changé de mot de passe
       operationId: validatePasswordReset
       tags:
         - Users
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: userName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'utilisateur
       responses:
-        200:
+        '200':
           description: Password reset token is valid
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-  /users/reset-password/enter-new:
+  /users/{userName}/reset-password/enter-new:
     post:
       summary: Changement du mot de passe
       operationId: enterNewPassword
       tags:
         - Users
+      parameters:
+        - in: header
+          name: header
+          schema:
+            $ref: '#/components/schemas/Header'
+          required: true
+        - name: userName
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de l'utilisateur
+        
       requestBody:
         required: true
         content:
@@ -453,8 +1191,22 @@ paths:
                 newPassword:
                   type: string
       responses:
-        200:
+        '200':
           description: Changement du mot de passe réussit
+          content:
+            application/json:
+                schema:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+          
+        '500':
+          description: Erreur durant l'execution de la requette
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
@@ -548,7 +1300,9 @@ components:
           format: date
           description: Date de naissance de l'utilisateur
         paiementInfos:
-          $ref: '#/components/schemas/PaymentInfo'
+          type: array
+          items: 
+            $ref: '#/components/schemas/PaymentInfo'
         createDate:
           type: string
           format: date
@@ -716,9 +1470,6 @@ components:
         roleName:
           type: string
           description: Nom du rôle
-        permission:
-          type: string
-          description: Permission
         level:
           type: number
           description: Niveau
@@ -730,6 +1481,73 @@ components:
           type: string
           format: date
           description: Date de mise à jour
+          
+    Device:
+      type: object
+      properties:
+        deviceID:
+          type: string
+          format: uuid
+          description: ID du device
+        deviceName:
+          type: string
+          description: Nom du device
+        brand:
+          type: string
+          description: Brand du divice
+        userID:
+          type: string
+          format: uuid
+          description: uuid du proprietaire du device
+        isActive:
+          type: boolean
+          description: dit si le device est actif
+        createDate:
+          type: string
+          format: date
+          description: Date de création
+        updateDate:
+          type: string
+          format: date
+          description: Date de mise à jour
+          
+    Header:
+      type: object
+      properties:
+        x-correlation-id:
+          type: string
+          format: uuid
+          description: ID du header
+        authorization:
+          type: string
+          format: token
+          description: Bearer token
+        contentType:
+          type: string
+          description: The content type
+        deviceId:
+          type: string
+          description: uuid du device
+        universaId:
+          type: string
+          description: The universal id
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        message:
+          type: string
+          description: Message d'erreur lisible par des humains.
+        code:
+          type: integer
+          description: le code de l'erreur.
+      example:
+        message: "Une erreur durant l'execution de la requette."
+        code: 500
+
 
     RoleApp:
       type: object
@@ -759,14 +1577,6 @@ components:
           description: Date de mise à jour
   securitySchemes:
     melo_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: ''
-          scopes:
-            write: write permission
-            read: readpermission
-    api_key:
       type: apiKey
       name: api_key
       in: header
