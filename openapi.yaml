@@ -1547,7 +1547,7 @@ components:
           type: integer
           description: le code de l'erreur.
       example:
-        message: "Une erreur durant l'execution de la requette."
+        message: "Une erreur durant l'execution de la requette !"
         code: 500
 
 
