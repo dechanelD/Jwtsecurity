@@ -4,9 +4,9 @@ info:
   description: API Meloaude pour gérer les applications, les pays et les utilisateurs.
   version: 1.0.0
 servers:
-  - url: http://localhost:9000 
+  - url: http://localhost:9000
     description: Serveur local de développement
-  
+
 paths:
   /applications:
     get:
@@ -29,7 +29,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Application'
-        
+
 
     post:
       summary: Crée une nouvelle application
@@ -83,7 +83,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                
+
         '500':
           description: Erreur durant l'execution de la requette
           content:
@@ -169,7 +169,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /medias:
     get:
       summary: Récupère la liste de tous les medias
@@ -191,7 +191,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Media'
-        
+
 
     post:
       summary: Crée un nouveau media
@@ -245,7 +245,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                
+
         '500':
           description: Erreur durant l'execution de la requette
           content:
@@ -331,8 +331,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                
-  
+
+
   /roles:
     get:
       summary: Récupère la liste de tous les roles
@@ -354,7 +354,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Role'
-        
+
 
     post:
       summary: Crée un nouveau role
@@ -408,7 +408,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                
+
         '500':
           description: Erreur durant l'execution de la requette
           content:
@@ -494,8 +494,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                
-  
+
+
   /role-apps:
     get:
       summary: Récupère la liste de tous les roles des applications
@@ -517,7 +517,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/RoleApp'
-        
+
 
     post:
       summary: Crée un nouveau role d' application
@@ -571,7 +571,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                
+
         '500':
           description: Erreur durant l'execution de la requette
           content:
@@ -934,7 +934,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /users/{userName}/roles/{roleName}:
     put:
       summary: Assigner un rôle à un utilisateur dans une application
@@ -1009,19 +1009,19 @@ paths:
         required: true
         content:
           application/json:
-              schema:
-                oneOf:
-                  - type: object
-                    properties:
-                      email:
-                        type: string
-                        format: email
-                      password:
-                        type: string
-                  - type: object
-                    properties:
-                      password:
-                        type: string
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                - type: object
+                  properties:
+                    password:
+                      type: string
       responses:
         '201':
           description: Utilisateur connecté avec succès
@@ -1048,7 +1048,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          
+
   /user/{userName}/logout:
     get:
       summary: Déconnection d'un utilisateur
@@ -1178,7 +1178,7 @@ paths:
             type: string
             format: uuid
           description: ID de l'utilisateur
-        
+
       requestBody:
         required: true
         content:
@@ -1195,12 +1195,12 @@ paths:
           description: Changement du mot de passe réussit
           content:
             application/json:
-                schema:
-                  type: object
-                  properties:
-                    token:
-                      type: string
-          
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+
         '500':
           description: Erreur durant l'execution de la requette
           content:
@@ -1292,6 +1292,8 @@ components:
           description: Mot de passe de l'utilisateur
         location:
           $ref: '#/components/schemas/Address'
+        medias:
+          $ref: '#/components/schemas/Media'
         phone:
           type: string
           description: Téléphone de l'utilisateur
@@ -1301,7 +1303,7 @@ components:
           description: Date de naissance de l'utilisateur
         paiementInfos:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/PaymentInfo'
         createDate:
           type: string
@@ -1481,7 +1483,7 @@ components:
           type: string
           format: date
           description: Date de mise à jour
-          
+
     Device:
       type: object
       properties:
@@ -1510,7 +1512,7 @@ components:
           type: string
           format: date
           description: Date de mise à jour
-          
+
     Header:
       type: object
       properties:
